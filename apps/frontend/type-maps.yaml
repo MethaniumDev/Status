@@ -1,0 +1,9 @@
+protocol_version: "1.0"
+
+type_maps:
+  "1.0":
+    CommunicationTypes:
+      GetStatus: 32
+      StatusSnapshot: 33
+    DataTypes:
+      Payload: 32

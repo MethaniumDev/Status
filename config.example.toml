@@ -1,0 +1,72 @@
+public_address = "0.0.0.0"
+public_port = 4433
+admin_address = "127.0.0.1"
+admin_port = 8091
+check_interval_seconds = 300
+timeout_seconds = 15
+certificate = ".dev/cert.pem"
+private_key = ".dev/key.pem"
+frontend_dir = "apps/frontend/dist"
+state_dir = ".dev/state"
+curl = "curl"
+
+[[categories]]
+id = "methanium"
+name = "Methanium"
+logo = "apps/frontend/public/methanium.svg"
+
+[[categories.services]]
+id = "methanium-homepage"
+name = "Homepage"
+url = "https://methanium.net"
+
+[[categories.services]]
+id = "methanium-ui"
+name = "Methanium UI"
+url = "https://ui.methanium.net"
+
+[[categories.services]]
+id = "vector-verdict"
+name = "Vector Verdict"
+url = "https://vv.methanium.net"
+
+[[categories.services]]
+id = "methanium-git"
+name = "Git"
+url = "https://git.methanium.net"
+
+[[categories.services]]
+id = "methanium-legal"
+name = "Legal Page"
+url = "https://legal.methanium.net"
+
+[[categories]]
+id = "tensamin"
+name = "Tensamin"
+logo = "apps/frontend/public/tensamin.svg"
+
+[[categories.services]]
+id = "tensamin-homepage"
+name = "Homepage"
+url = "https://tensamin.net"
+
+[[categories.services]]
+id = "tensamin-app"
+name = "Web App"
+url = "https://app.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-dev"
+name = "Web App (Dev)"
+url = "https://dev.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-docs"
+name = "Docs"
+url = "https://docs.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-omega"
+name = "Omega"
+url = "https://omega.tensamin.net"
+check_http3 = true

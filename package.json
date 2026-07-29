@@ -1,0 +1,24 @@
+{
+  "name": "methanium-status",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.17.0",
+  "scripts": {
+    "dev": "pnpm dev:cert && concurrently --kill-others --success first --names frontend,backend --prefix-colors cyan,magenta \"pnpm --filter @methanium/status-frontend dev\" \"pnpm dev:backend\"",
+    "dev:cert": "mkdir -p .dev && if [ ! -f .dev/cert.pem ] || [ ! -f .dev/key.pem ] || ! openssl x509 -in .dev/cert.pem -checkend 0 -noout >/dev/null 2>&1 || ! openssl x509 -in .dev/cert.pem -noout -text | grep -q 'Public Key Algorithm: id-ecPublicKey'; then openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -keyout .dev/key.pem -out .dev/cert.pem -days 10 -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1; fi && printf 'VITE_MTP_URL=https://127.0.0.1:4433/mtp\\nVITE_MTP_CERT_HASH=%s\\n' \"$(openssl x509 -in .dev/cert.pem -outform DER | openssl dgst -sha256 -r | cut -d ' ' -f1)\" > apps/frontend/.env.local",
+    "dev:backend": "cargo run --manifest-path apps/backend/Cargo.toml -- config.example.toml",
+    "build": "pnpm --filter @methanium/status-frontend build",
+    "check": "tsc -p tsconfig.json && cargo check --manifest-path apps/backend/Cargo.toml",
+    "lint": "oxlint apps/frontend/src packages/mtp && cargo clippy --manifest-path apps/backend/Cargo.toml -- -D warnings",
+    "test": "cargo test --manifest-path apps/backend/Cargo.toml",
+    "fmt": "prettier --write . && cargo fmt --manifest-path apps/backend/Cargo.toml",
+    "fmt:check": "prettier --check . && cargo fmt --manifest-path apps/backend/Cargo.toml --check"
+  },
+  "devDependencies": {
+    "oxlint": "^1.28.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "@types/node": "^24.0.0",
+    "concurrently": "^9.2.1"
+  }
+}

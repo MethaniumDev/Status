@@ -1,0 +1,18 @@
+{
+  "name": "@methanium/status-mtp",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "peerDependencies": {
+    "@methanium/ui": "*",
+    "mtp": "*",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@methanium/ui": "*",
+    "mtp": "*",
+    "react": "^19.2.0"
+  }
+}

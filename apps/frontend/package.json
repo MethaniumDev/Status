@@ -1,0 +1,28 @@
+{
+  "name": "@methanium/status-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@methanium/status-mtp": "workspace:*",
+    "@methanium/ui": "*",
+    "@tanstack/react-router": "^1.131.35",
+    "lucide-react": "^1.21.0",
+    "mtp": "*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "@tanstack/router-plugin": "^1.131.35",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tailwindcss": "^4.3.1",
+    "vite": "^7.1.12"
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" class="dark" data-theme="methanium">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#171e26" />
+    <title>Methanium Status</title>
+    <style>
+      html.dark,
+      html.dark body {
+        background-color: #171e26;
+        color: #d2e0f0;
+        color-scheme: dark;
+      }
+
+      html.light,
+      html.light body {
+        background-color: #edf1f4;
+        color: #10161d;
+        color-scheme: light;
+      }
+    </style>
+    <script>
+      const savedTheme = localStorage.getItem("theme");
+      const theme =
+        savedTheme === "light" ||
+        (savedTheme === "system" &&
+          matchMedia("(prefers-color-scheme: light)").matches)
+          ? "light"
+          : "dark";
+      document.documentElement.classList.replace("dark", theme);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
