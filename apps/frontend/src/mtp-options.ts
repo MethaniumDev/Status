@@ -15,12 +15,22 @@ function logMTP(event: MTPLogEvent) {
   }
 }
 
+async function getMTPUrl() {
+  const response = await fetch("/api/config");
+  if (!response.ok) throw new Error("Failed to load MTP configuration");
+
+  const config = (await response.json()) as { public_port: number };
+  const url = new URL(location.origin);
+  url.port = String(config.public_port);
+  return url.origin;
+}
+
 export const mtpOptions: MTPClientOptions | null = location.pathname.startsWith(
   "/edit",
 )
   ? null
   : {
-      url: configuredUrl ?? `${location.origin}/mtp`,
+      url: configuredUrl ?? (await getMTPUrl()),
       descriptor: "methanium-status-frontend",
       pings: false,
       logger: logMTP,

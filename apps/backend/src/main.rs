@@ -20,6 +20,7 @@ use tokio::sync::{RwLock, watch};
 pub struct AppState {
     categories: Arc<RwLock<Vec<Category>>>,
     incidents: IncidentStore,
+    public_port: u16,
     updates: watch::Sender<String>,
 }
 
@@ -70,6 +71,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let state = Arc::new(AppState {
         categories: Arc::clone(&categories),
         incidents,
+        public_port: config.public_port,
         updates,
     });
 

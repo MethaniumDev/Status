@@ -7,6 +7,7 @@ use axum::{
     response::{IntoResponse, Response},
     routing::{delete, get, post},
 };
+use serde::Serialize;
 use tower_http::{
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
@@ -23,6 +24,7 @@ pub async fn serve(
     let index = frontend.join("index.html");
     let assets = ServeDir::new(frontend).fallback(ServeFile::new(index));
     let app = Router::new()
+        .route("/api/config", get(public_config))
         .route("/api/admin", get(admin))
         .route("/api/incidents", get(list).post(create))
         .route("/api/incidents/{id}", delete(remove))
@@ -33,6 +35,17 @@ pub async fn serve(
     let listener = tokio::net::TcpListener::bind(address).await?;
     tracing::info!(%address, "admin page listening");
     axum::serve(listener, app).await
+}
+
+#[derive(Serialize)]
+struct PublicConfig {
+    public_port: u16,
+}
+
+async fn public_config(State(state): State<Arc<AppState>>) -> Json<PublicConfig> {
+    Json(PublicConfig {
+        public_port: state.public_port,
+    })
 }
 
 async fn admin() -> StatusCode {
