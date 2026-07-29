@@ -10,13 +10,16 @@ import { defineConfig, type Plugin } from "vite";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  server: {
-    https: {
-      cert: fs.readFileSync(path.resolve(root, "../../.dev/cert.pem")),
-      key: fs.readFileSync(path.resolve(root, "../../.dev/key.pem")),
-    },
-  },
+export default defineConfig(({ command }) => ({
+  server:
+    command === "serve"
+      ? {
+          https: {
+            cert: fs.readFileSync(path.resolve(root, "../../.dev/cert.pem")),
+            key: fs.readFileSync(path.resolve(root, "../../.dev/key.pem")),
+          },
+        }
+      : undefined,
   plugins: [
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
     tailwindcss(),
@@ -32,4 +35,4 @@ export default defineConfig({
       ),
     },
   },
-});
+}));
