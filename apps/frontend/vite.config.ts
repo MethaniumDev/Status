@@ -25,7 +25,10 @@ export default defineConfig(({ command }) => ({
     tailwindcss(),
     react(),
     methaniumUi({ defaultThemeId: "methanium" }),
-    mtp({ typeMaps: "./type-maps.yaml" }) as Plugin,
+    mtp({
+      typeMaps: "./type-maps.yaml",
+      wasmPackArgs: command === "build" ? ["--mode", "no-install"] : undefined,
+    }) as Plugin,
   ],
   resolve: {
     alias: {

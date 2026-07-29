@@ -32,6 +32,24 @@
           rustToolchain = pkgs.rust-bin.stable.latest.default.override {
             targets = [ "wasm32-unknown-unknown" ];
           };
+          wasmBindgenCli = pkgs.rustPlatform.buildRustPackage rec {
+            pname = "wasm-bindgen-cli";
+            version = "0.2.126";
+            src = pkgs.fetchCrate {
+              inherit pname version;
+              hash = "sha256-H6Is3fiZVxZCfOMWK5dWMSrtn50VGv0sfdnsT+cTtyk=";
+            };
+            cargoHash = "sha256-VucqkXbCi4qtQzY/HrXiDnbSURsagPsdNVMn1Tw3UiY=";
+            doCheck = false;
+          };
+          mtpSource = pkgs.fetchzip {
+            url = "https://git.methanium.net/methanium/mtp/releases/download/0.2.0-dev-a692bed/mtp-0.2.0.tgz";
+            hash = "sha256-RIk4zhSkKg9jpeEoXNlRzSIZiOsNTEX/1mXVu1m/9rY=";
+          };
+          mtpCargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+            src = mtpSource;
+            hash = "sha256-jNQdhihszzQ3lcDk7WC3D6tigluhKPohAlNaTm77yuU=";
+          };
           source = pkgs.lib.cleanSourceWith {
             src = ./.;
             filter =
@@ -46,64 +64,43 @@
               && relative != "result";
           };
           frontendNativeBuildInputs = [
+            pkgs.binaryen
             pkgs.cacert
             pkgs.git
             pkgs.nodejs
             pkgs.pnpm
             pkgs.wasm-pack
             rustToolchain
+            wasmBindgenCli
           ];
-          frontendDeps = pkgs.stdenvNoCC.mkDerivation {
+          frontendDeps = pkgs.fetchPnpmDeps {
             pname = "methanium-status-frontend-deps";
             version = "0.1.0";
             src = source;
-            nativeBuildInputs = frontendNativeBuildInputs;
-            outputHashAlgo = "sha256";
-            outputHashMode = "recursive";
-            outputHash = "sha256-hyNuty4/6MvRxnGIOVsqdUC0B1+LL4yGDjNUkDAUDPY=";
-            dontFixup = true;
-            __structuredAttrs = true;
-            unsafeDiscardReferences.out = true;
-
-            buildPhase = ''
-              runHook preBuild
-              export HOME="$TMPDIR/home"
-              export CARGO_HOME="$TMPDIR/cargo"
-              mkdir -p "$HOME"
-              pnpm install --frozen-lockfile
-              patchShebangs node_modules
-              pnpm build
-              runHook postBuild
-            '';
-
-            installPhase = ''
-              runHook preInstall
-              mkdir -p "$out/apps/frontend"
-              cp -a node_modules "$out/node_modules"
-              cp -a apps/frontend/node_modules "$out/apps/frontend/node_modules"
-              cp -a "$CARGO_HOME" "$out/cargo"
-              cp -a "$HOME/.cache/.wasm-pack" "$out/wasm-pack"
-              runHook postInstall
-            '';
+            pnpm = pkgs.pnpm;
+            fetcherVersion = 4;
+            hash = "sha256-/cyB6+R0kELjIjcZAwqn0OFI0j3s4Jw+/dCbpcYbx8U=";
           };
           frontend = pkgs.stdenvNoCC.mkDerivation {
             pname = "methanium-status-frontend";
             version = "0.1.0";
             src = source;
-            nativeBuildInputs = frontendNativeBuildInputs;
+            nativeBuildInputs = frontendNativeBuildInputs ++ [ pkgs.pnpmConfigHook ];
+            pnpmDeps = frontendDeps;
 
             buildPhase = ''
               runHook preBuild
-              cp -a ${frontendDeps}/node_modules .
-              cp -a ${frontendDeps}/apps/frontend/node_modules apps/frontend/node_modules
-              cp -a ${frontendDeps}/cargo "$TMPDIR/cargo"
-              chmod -R u+w node_modules apps/frontend/node_modules "$TMPDIR/cargo"
               export HOME="$TMPDIR/home"
               export CARGO_HOME="$TMPDIR/cargo"
               export CARGO_NET_OFFLINE=true
-              mkdir -p "$HOME/.cache"
-              cp -a ${frontendDeps}/wasm-pack "$HOME/.cache/.wasm-pack"
-              chmod -R u+w "$HOME/.cache/.wasm-pack"
+              mkdir -p "$CARGO_HOME"
+              cat > "$CARGO_HOME/config.toml" <<EOF
+              [source.crates-io]
+              replace-with = "vendored-sources"
+
+              [source.vendored-sources]
+              directory = "${mtpCargoDeps}/source-registry-0"
+              EOF
               pnpm build
               runHook postBuild
             '';
