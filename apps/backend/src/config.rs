@@ -88,11 +88,6 @@ fn validate(config: &Config) -> Result<(), ConfigError> {
             "check interval and timeout must be greater than zero".into(),
         ));
     }
-    if !config.admin_address.is_loopback() {
-        return Err(ConfigError::Invalid(
-            "admin_address must be a loopback address".into(),
-        ));
-    }
     if config.certificate.is_empty() || config.private_key.is_empty() {
         return Err(ConfigError::Invalid(
             "certificate and private_key are required".into(),
