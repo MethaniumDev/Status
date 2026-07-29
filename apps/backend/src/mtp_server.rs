@@ -16,9 +16,7 @@ pub async fn serve(
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let policy = Policy::default().with_send_mode(SendMode::SingleStreamPerMessage);
     let host = HostConfig::new(address, port, certificate, private_key).with_policy(policy);
-    let web = WebServerConfig::new()
-        .mtp_path("/mtp")
-        .serve_tcp_https(false);
+    let web = WebServerConfig::new().mtp_path("/").serve_tcp_https(false);
     let mut server = MTPWebServer::new(host, web).await?;
     tracing::info!(address = %server.local_addr(), "MTP WebTransport listening");
 
