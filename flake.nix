@@ -257,7 +257,7 @@
             publicPort = lib.mkOption {
               type = lib.types.port;
               default = 443;
-              description = "Shared nginx TCP and MTP UDP public port.";
+              description = "Public UDP port for the MTP server.";
             };
             adminAddress = lib.mkOption {
               type = lib.types.str;
@@ -287,7 +287,7 @@
             openFirewall = lib.mkOption {
               type = lib.types.bool;
               default = false;
-              description = "Open the public TCP and UDP port in the firewall.";
+              description = "Open the public UDP port in the firewall.";
             };
             openAdminFirewall = lib.mkOption {
               type = lib.types.bool;
@@ -332,30 +332,10 @@
               isSystemUser = true;
               group = "methanium-status";
             };
-            users.users.nginx.extraGroups = [ "methanium-status" ];
 
             security.acme.certs.${acmeHost} = {
               group = "methanium-status";
               reloadServices = [ "methanium-status.service" ];
-            };
-
-            services.nginx = {
-              enable = true;
-              virtualHosts.${cfg.hostName} = {
-                forceSSL = true;
-                enableACME = cfg.acmeHost == null;
-                useACMEHost = lib.mkIf (cfg.acmeHost != null) acmeHost;
-                root = cfg.frontendPackage;
-                listen = [
-                  { addr = "0.0.0.0"; port = cfg.publicPort; ssl = true; }
-                  { addr = "[::]"; port = cfg.publicPort; ssl = true; }
-                ];
-                extraConfig = ''
-                  add_header Alt-Svc 'h3=":${toString cfg.publicPort}"; ma=86400' always;
-                '';
-                locations."/".tryFiles = "$uri $uri/ /index.html";
-                locations."^~ /edit".return = "404";
-              };
             };
 
             systemd.services.methanium-status = {
@@ -393,9 +373,7 @@
               };
             };
 
-            networking.firewall.allowedTCPPorts =
-              lib.optionals cfg.openFirewall [ cfg.publicPort ]
-              ++ lib.optionals cfg.openAdminFirewall [ cfg.adminPort ];
+            networking.firewall.allowedTCPPorts = lib.optionals cfg.openAdminFirewall [ cfg.adminPort ];
             networking.firewall.allowedUDPPorts = lib.optionals cfg.openFirewall [ cfg.publicPort ];
           };
         };

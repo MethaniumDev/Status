@@ -49,7 +49,7 @@ ssh -L 8081:127.0.0.1:8081 status-host
 
 ## NixOS
 
-The included module serves the SPA with nginx on TCP 443 and MTP HTTP/3/WebTransport on UDP 443. Both use the same ACME certificate and origin.
+The included module serves the SPA with MTP HTTP/3/WebTransport on UDP 443 using an ACME certificate.
 
 ```nix
 {
