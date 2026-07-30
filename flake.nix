@@ -79,7 +79,7 @@
             src = source;
             pnpm = pkgs.pnpm;
             fetcherVersion = 4;
-            hash = "sha256-/cyB6+R0kELjIjcZAwqn0OFI0j3s4Jw+/dCbpcYbx8U=";
+            hash = "sha256-x9YvkWSTYG3AULRNXdaNOnHQTtlosZGqq//jV6DPkSk=";
           };
           frontend = pkgs.stdenvNoCC.mkDerivation {
             pname = "methanium-status-frontend";
