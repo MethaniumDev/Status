@@ -33,7 +33,7 @@ export function Header() {
             className="hidden md:flex h-9 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             render={<a target="_blank" href="mailto:contact@methanium.net" />}
           >
-            Contact us <ExternalLink />
+            Contact us
           </Button>
           <Button
             nativeButton={false}
@@ -42,7 +42,7 @@ export function Header() {
             className="hidden md:flex h-9 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             render={<a target="_blank" href="mailto:security@methanium.net" />}
           >
-            Report security issue <ExternalLink />
+            Report security issue
           </Button>
         </nav>
         <div className="flex h-full items-center gap-2">
