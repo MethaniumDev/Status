@@ -17,10 +17,10 @@ export function Header() {
           variant="ghost"
           size="sm"
           className="mr-1 shrink-0 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          style={{ width: "46.59px", height: "36px", padding: "3px 13px" }}
+          style={{ padding: "3px 13px" }}
           render={<a href="/" aria-label="Methanium home" />}
         >
-          <img src="/methanium.svg" alt="" className="h-8 w-6 object-contain" />
+          <img src="/methanium.svg" alt="Logo" className="w-[20.59px]!" />
         </Button>
         <nav
           className="mr-auto flex h-full shrink-0 items-center"
