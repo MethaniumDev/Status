@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = "0.8"
-base64 = "0.22"
+base64 = "0.23"
 chrono = { version = "0.4", features = ["serde"] }
 http = "1"
 mtp = { git = "https://git.methanium.net/methanium/mtp.git", rev = "a692bed326dbfc8eac1a05825f4a287cbab6fd3e", features = ["crypto", "web-server"] }
