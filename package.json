@@ -18,7 +18,7 @@
     "oxlint": "^1.28.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.0.0",
     "concurrently": "^9.2.1"
   }
 }
