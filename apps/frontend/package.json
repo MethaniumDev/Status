@@ -9,20 +9,20 @@
   },
   "dependencies": {
     "@methanium/status-mtp": "workspace:*",
-    "@methanium/ui": "*",
-    "@tanstack/react-router": "^1.131.35",
-    "lucide-react": "^1.21.0",
-    "mtp": "*",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "@methanium/ui": "https://git.methanium.net/methanium/ui/releases/download/0.0.13/methanium-ui.tgz",
+    "@tanstack/react-router": "^1.170.25",
+    "lucide-react": "^1.31.0",
+    "mtp": "https://git.methanium.net/methanium/mtp/releases/download/0.2.0-dev-a692bed/mtp-0.2.0.tgz",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.1",
-    "@tanstack/router-plugin": "^1.131.35",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@vitejs/plugin-react": "^6.0.0",
-    "tailwindcss": "^4.3.1",
-    "vite": "^7.1.12"
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/router-plugin": "^1.168.29",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.1"
   }
 }

@@ -15,10 +15,10 @@
     "fmt:check": "prettier --check . && cargo fmt --manifest-path apps/backend/Cargo.toml --check"
   },
   "devDependencies": {
-    "oxlint": "^1.28.0",
-    "prettier": "^3.6.2",
-    "typescript": "^7.0.0",
-    "@types/node": "^26.0.0",
-    "concurrently": "^10.0.0"
+    "@types/node": "^26.2.0",
+    "concurrently": "^10.0.4",
+    "oxlint": "^1.77.0",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2"
   }
 }
