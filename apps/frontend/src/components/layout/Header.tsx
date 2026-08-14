@@ -46,7 +46,7 @@ export function Header() {
           </Button>
         </nav>
         <div className="flex h-full items-center gap-2">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground max-w-70 overflow-hidden truncate">
             {snapshot?.generatedAt
               ? `Updated ${formatTime(snapshot.generatedAt)}`
               : (error?.message ?? "Waiting for data")}

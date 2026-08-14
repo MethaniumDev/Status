@@ -252,7 +252,7 @@ function ServiceRow({
   return (
     <div
       className={cn(
-        "px-4 flex items-center justify-between gap-40 py-2",
+        "px-4 flex items-center justify-between py-2 min-w-130",
         index < max - 1
           ? "border-border border-b border-[#C5CED6] dark:border-[#242D38]"
           : "",
@@ -268,7 +268,7 @@ function ServiceRow({
           <span className="truncate">{service.name}</span>
           <ExternalLink className="size-3 opacity-0 transition-opacity group-hover:opacity-60" />
         </a>
-        <p className="mt-1 truncate text-xs text-muted-foreground">
+        <p className="mt-1 truncate text-xs max-w-80 text-muted-foreground">
           {service.error ??
             (service.latencyMs !== null
               ? `${service.latencyMs} ms${service.checkHttp3 ? " (HTTP/3 verified)" : ""}`
