@@ -7,7 +7,12 @@
   };
 
   outputs =
-    { self, nixpkgs, rust-overlay, ... }:
+    {
+      self,
+      nixpkgs,
+      rust-overlay,
+      ...
+    }:
     let
       systems = [
         "aarch64-darwin"
@@ -79,7 +84,7 @@
             src = source;
             pnpm = pkgs.pnpm;
             fetcherVersion = 4;
-            hash = "sha256-x9YvkWSTYG3AULRNXdaNOnHQTtlosZGqq//jV6DPkSk=";
+            hash = "sha256-NUWGQOodwjJTMzJtkuqoL/nWTs85jlpXIZAY4a86QEw=";
           };
           frontend = pkgs.stdenvNoCC.mkDerivation {
             pname = "methanium-status-frontend";
@@ -166,7 +171,12 @@
       });
 
       nixosModules.default =
-        { config, lib, pkgs, ... }:
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
         let
           cfg = config.services.methanium-status;
           acmeHost = if cfg.acmeHost == null then cfg.hostName else cfg.acmeHost;
@@ -238,7 +248,9 @@
           options.services.methanium-status = {
             enable = lib.mkEnableOption "Methanium Status monitoring and status page";
             package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "backend" { };
-            frontendPackage = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "frontend" { };
+            frontendPackage =
+              lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "frontend"
+                { };
             hostName = lib.mkOption {
               type = lib.types.str;
               default = "status.methanium.net";
@@ -303,11 +315,31 @@
                   name = "Methanium";
                   logo = ./apps/frontend/public/methanium.svg;
                   services = [
-                    { id = "methanium-homepage"; name = "Homepage"; url = "https://methanium.net"; }
-                    { id = "methanium-ui"; name = "Methanium UI"; url = "https://ui.methanium.net"; }
-                    { id = "vector-verdict"; name = "Vector Verdict"; url = "https://vv.methanium.net"; }
-                    { id = "methanium-git"; name = "Git"; url = "https://git.methanium.net"; }
-                    { id = "methanium-legal"; name = "Legal Page"; url = "https://legal.methanium.net"; }
+                    {
+                      id = "methanium-homepage";
+                      name = "Homepage";
+                      url = "https://methanium.net";
+                    }
+                    {
+                      id = "methanium-ui";
+                      name = "Methanium UI";
+                      url = "https://ui.methanium.net";
+                    }
+                    {
+                      id = "vector-verdict";
+                      name = "Vector Verdict";
+                      url = "https://vv.methanium.net";
+                    }
+                    {
+                      id = "methanium-git";
+                      name = "Git";
+                      url = "https://git.methanium.net";
+                    }
+                    {
+                      id = "methanium-legal";
+                      name = "Legal Page";
+                      url = "https://legal.methanium.net";
+                    }
                   ];
                 }
                 {
@@ -315,11 +347,32 @@
                   name = "Tensamin";
                   logo = ./apps/frontend/public/tensamin.svg;
                   services = [
-                    { id = "tensamin-homepage"; name = "Homepage"; url = "https://tensamin.net"; }
-                    { id = "tensamin-app"; name = "Web App"; url = "https://app.tensamin.net"; }
-                    { id = "tensamin-dev"; name = "Web App (Dev)"; url = "https://dev.tensamin.net"; }
-                    { id = "tensamin-docs"; name = "Docs"; url = "https://docs.tensamin.net"; }
-                    { id = "tensamin-omega"; name = "Omega"; url = "https://omega.tensamin.net"; checkHttp3 = true; }
+                    {
+                      id = "tensamin-homepage";
+                      name = "Homepage";
+                      url = "https://tensamin.net";
+                    }
+                    {
+                      id = "tensamin-app";
+                      name = "Web App";
+                      url = "https://app.tensamin.net";
+                    }
+                    {
+                      id = "tensamin-dev";
+                      name = "Web App (Dev)";
+                      url = "https://dev.tensamin.net";
+                    }
+                    {
+                      id = "tensamin-docs";
+                      name = "Docs";
+                      url = "https://docs.tensamin.net";
+                    }
+                    {
+                      id = "tensamin-omega";
+                      name = "Omega";
+                      url = "https://omega.tensamin.net";
+                      checkHttp3 = true;
+                    }
                   ];
                 }
               ];
@@ -341,8 +394,14 @@
             systemd.services.methanium-status = {
               description = "Methanium Status monitor";
               wantedBy = [ "multi-user.target" ];
-              wants = [ "network-online.target" "acme-${acmeHost}.service" ];
-              after = [ "network-online.target" "acme-${acmeHost}.service" ];
+              wants = [
+                "network-online.target"
+                "acme-${acmeHost}.service"
+              ];
+              after = [
+                "network-online.target"
+                "acme-${acmeHost}.service"
+              ];
               restartTriggers = [ configFile ];
               serviceConfig = {
                 User = "methanium-status";
@@ -365,7 +424,10 @@
                 ProtectKernelModules = true;
                 ProtectKernelTunables = true;
                 ProtectSystem = "strict";
-                RestrictAddressFamilies = [ "AF_INET" "AF_INET6" ];
+                RestrictAddressFamilies = [
+                  "AF_INET"
+                  "AF_INET6"
+                ];
                 RestrictNamespaces = true;
                 RestrictRealtime = true;
                 SystemCallArchitectures = "native";
