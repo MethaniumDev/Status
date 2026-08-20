@@ -1,0 +1,21 @@
+name: Dependency builds
+
+on:
+  pull_request:
+
+env:
+  FORGEJO_TOKEN: ""
+  GITHUB_TOKEN: ""
+
+jobs:
+  check:
+    if: ${{ github.actor == 'rasensprenger' }}
+    name: Build & Lint
+    runs-on: nixos
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: nix develop .#default --command pnpm install --frozen-lockfile
+      - run: nix develop .#default --command pnpm run lint
+      - run: nix develop .#default --command pnpm run build
