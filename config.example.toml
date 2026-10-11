@@ -51,22 +51,57 @@ name = "Homepage"
 url = "https://tensamin.net"
 
 [[categories.services]]
-id = "tensamin-app"
-name = "Web App"
-url = "https://app.tensamin.net"
-
-[[categories.services]]
-id = "tensamin-dev"
-name = "Web App (Dev)"
-url = "https://dev.tensamin.net"
-
-[[categories.services]]
 id = "tensamin-docs"
 name = "Docs"
 url = "https://docs.tensamin.net"
 
 [[categories.services]]
-id = "tensamin-omega"
+id = "tensamin-stable-omega"
 name = "Omega"
-url = "https://omega.tensamin.net"
+url = "https://omega.stable.tensamin.net/.well-known/tensamin"
+check_http3 = true
+
+[[categories.services]]
+id = "tensamin-stable-app"
+name = "Web App"
+url = "https://app.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-stable-omikron-1"
+name = "Omikron 1"
+url = "https://omikron.stable.tensamin.net"
+check_http3 = true
+
+[[categories.services]]
+id = "tensamin-dev-app"
+name = "Web App"
+url = "https://app.dev.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-dev-omega"
+name = "Omega"
+url = "https://omega.dev.tensamin.net/.well-known/tensamin"
+check_http3 = true
+
+[[categories.services]]
+id = "tensamin-dev-omikron-1"
+name = "Omikron 1"
+url = "https://omikron.dev.tensamin.net"
+check_http3 = true
+
+[[categories.services]]
+id = "tensamin-canary-app"
+name = "Web App"
+url = "https://app.canary.tensamin.net"
+
+[[categories.services]]
+id = "tensamin-canary-omega"
+name = "Omega"
+url = "https://omega.canary.tensamin.net/.well-known/tensamin"
+check_http3 = true
+
+[[categories.services]]
+id = "tensamin-canary-omikron-1"
+name = "Omikron 1"
+url = "https://omikron.canary.tensamin.net"
 check_http3 = true

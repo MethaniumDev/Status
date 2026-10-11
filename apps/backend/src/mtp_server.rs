@@ -55,13 +55,17 @@ async fn serve_connection(
                 if request.is_type(CommunicationType::GetStatus) {
                     let payload = state.snapshot_json().await;
                     let bytes = payload.len();
-                    let response = snapshot(&type_map, payload).with_id(request.get_id());
-                    tracing::info!(connection_id, request_id = request.get_id(), bytes, "received status request");
+                    let request_id = request.id();
+                    let mut response = snapshot(&type_map, payload);
+                    if let Some(id) = request_id {
+                        response = response.with_id(id);
+                    }
+                    tracing::info!(connection_id, ?request_id, bytes, "received status request");
                     if let Err(error) = sender.send(&response).await {
-                        tracing::warn!(connection_id, request_id = request.get_id(), %error, "failed to send status response");
+                        tracing::warn!(connection_id, ?request_id, %error, "failed to send status response");
                         break;
                     }
-                    tracing::info!(connection_id, request_id = request.get_id(), "sent status response");
+                    tracing::info!(connection_id, ?request_id, "sent status response");
                 } else {
                     tracing::warn!(connection_id, "received unsupported MTP request");
                 }

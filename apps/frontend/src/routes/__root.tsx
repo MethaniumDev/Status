@@ -13,15 +13,13 @@ export const Route = createRootRoute({
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <Outlet />
-      <div className="w-full flex justify-center pb-5">
-        <a
-          href="https://legal.methanium.net/methanium/privacy-policy"
-          target="_blank"
-          className="hover:underline"
-        >
-          Privacy Policy
-        </a>
-      </div>
+      <a
+        href="https://legal.methanium.net/methanium/privacy-policy"
+        target="_blank"
+        className="hover:underline fixed bottom-0 left-0 p-3"
+      >
+        Privacy Policy
+      </a>
     </div>
   ),
   notFoundComponent: EmptyPage,

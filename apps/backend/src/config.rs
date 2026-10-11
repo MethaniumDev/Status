@@ -83,6 +83,11 @@ impl Config {
 }
 
 fn validate(config: &Config) -> Result<(), ConfigError> {
+    if !config.admin_address.is_loopback() {
+        return Err(ConfigError::Invalid(
+            "unauthenticated incident editor must listen on loopback".into(),
+        ));
+    }
     if config.check_interval_seconds == 0 || config.timeout_seconds == 0 {
         return Err(ConfigError::Invalid(
             "check interval and timeout must be greater than zero".into(),

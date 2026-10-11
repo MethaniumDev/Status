@@ -39,21 +39,22 @@
           };
           wasmBindgenCli = pkgs.rustPlatform.buildRustPackage rec {
             pname = "wasm-bindgen-cli";
-            version = "0.2.126";
+            version = "0.2.127";
             src = pkgs.fetchCrate {
               inherit pname version;
-              hash = "sha256-H6Is3fiZVxZCfOMWK5dWMSrtn50VGv0sfdnsT+cTtyk=";
+              hash = "sha256-di+qBAdd7pENLiIB9CoZoab+W5xeDoByMREcCGTSzWo=";
             };
-            cargoHash = "sha256-VucqkXbCi4qtQzY/HrXiDnbSURsagPsdNVMn1Tw3UiY=";
+            cargoHash = "sha256-FTv2GZIAQs0ePdIZXIXil7JbZ6kIT05VG6vqC1qNFxQ=";
             doCheck = false;
           };
           mtpSource = pkgs.fetchzip {
-            url = "https://git.methanium.net/methanium/mtp/releases/download/0.2.0-dev-a692bed/mtp-0.2.0.tgz";
-            hash = "sha256-RIk4zhSkKg9jpeEoXNlRzSIZiOsNTEX/1mXVu1m/9rY=";
+            url = "https://git.methanium.net/methanium/mtp/releases/download/0.4.0-dev-9f7f94e/mtp-0.4.0.tgz";
+            hash = "sha256-GrzbRlfG4zBNEgvBqqHV7N6T3Nj6dYjDyxWEEBjqu9k=";
           };
           mtpCargoDeps = pkgs.rustPlatform.fetchCargoVendor {
             src = mtpSource;
-            hash = "sha256-jNQdhihszzQ3lcDk7WC3D6tigluhKPohAlNaTm77yuU=";
+            sourceRoot = "source/.rust";
+            hash = "sha256-wrBgg1fXxsQoFCE1wnPdoPi9MxvyRjvpIj3eSxFlmqI=";
           };
           source = pkgs.lib.cleanSourceWith {
             src = ./.;
@@ -84,7 +85,7 @@
             src = source;
             pnpm = pkgs.pnpm;
             fetcherVersion = 4;
-            hash = "sha256-NUWGQOodwjJTMzJtkuqoL/nWTs85jlpXIZAY4a86QEw=";
+            hash = "sha256-9F3jtDCXQo2h5bsPgXs7xyU+eFZ2aYEcUcEd6zZoWnw=";
           };
           frontend = pkgs.stdenvNoCC.mkDerivation {
             pname = "methanium-status-frontend";
@@ -126,7 +127,7 @@
             cargoLock = {
               lockFile = ./apps/backend/Cargo.lock;
               outputHashes = {
-                "mtp-0.2.0" = "sha256-xfF1kRp0kDrGgTcQWN7nZHKgxXizZh4t14uHsS/MYSk=";
+                "mtp-0.4.0" = "sha256-XPTSHkbcUE4PguJXBlXzL74JADG4Kjp5eB11llMcxxc=";
               };
             };
             nativeBuildInputs = [ pkgs.cmake ];
@@ -353,27 +354,43 @@
                       url = "https://tensamin.net";
                     }
                     {
-                      id = "tensamin-app";
-                      name = "Web App";
-                      url = "https://app.tensamin.net";
-                    }
-                    {
-                      id = "tensamin-dev";
-                      name = "Web App (Dev)";
-                      url = "https://dev.tensamin.net";
-                    }
-                    {
                       id = "tensamin-docs";
                       name = "Docs";
                       url = "https://docs.tensamin.net";
                     }
-                    {
-                      id = "tensamin-omega";
-                      name = "Omega";
-                      url = "https://omega.tensamin.net";
-                      checkHttp3 = true;
-                    }
-                  ];
+                  ]
+                  ++
+                    lib.concatMap
+                      (
+                        channel:
+                        let
+                          domain = "${channel}.tensamin.net";
+                        in
+                        [
+                          {
+                            id = "tensamin-${channel}-app";
+                            name = "Web App";
+                            url = if channel == "stable" then "https://app.tensamin.net" else "https://app.${domain}";
+                          }
+                          {
+                            id = "tensamin-${channel}-omega";
+                            name = "Omega";
+                            url = "https://omega.${domain}/.well-known/tensamin";
+                            checkHttp3 = true;
+                          }
+                          {
+                            id = "tensamin-${channel}-omikron-1";
+                            name = "Omikron 1";
+                            url = "https://omikron.${domain}";
+                            checkHttp3 = true;
+                          }
+                        ]
+                      )
+                      [
+                        "dev"
+                        "stable"
+                        "canary"
+                      ];
                 }
               ];
             };

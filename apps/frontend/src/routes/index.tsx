@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import type { Incident, Service, ServiceStatus } from "../status";
+import type { Category, Incident, Service, ServiceStatus } from "../status";
 import { useStatus } from "../use-status";
 import { formatTime } from "../utils";
 import {
@@ -24,6 +24,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   cn,
 } from "@methanium/ui";
 
@@ -50,8 +54,8 @@ function Home() {
     ready && failures.length === 0 && activeIncidents.length === 0;
 
   return (
-    <main className="flex flex-col pb-5">
-      <div className="w-full flex gap-3 justify-center items-center py-10">
+    <main className="flex flex-col gap-10 py-10">
+      <div className="w-full flex gap-3 justify-center items-center">
         <div>
           {healthy ? (
             <Check className="size-7" />
@@ -64,23 +68,23 @@ function Home() {
         <div className="flex flex-col justify-start">
           <p className="text-lg">
             {healthy
-              ? "Everythin's alright on our side"
+              ? "We're up and running"
               : ready
                 ? `${failures.length + activeIncidents.length} active disruption${failures.length + activeIncidents.length === 1 ? "" : "s"}`
-                : "Scraping our own data..."}
+                : "Loading data..."}
           </p>
           <p className="text-sm text-muted-foreground">
             {!healthy && ready
               ? "More details below."
               : snapshot
                 ? ""
-                : "Connecting to Status Page backend..."}
+                : "Connecting..."}
           </p>
         </div>
       </div>
 
       {activeIncidents.length > 0 && (
-        <div className="grid w-full grid-cols-1 justify-center gap-6 pb-10 sm:grid-cols-[repeat(auto-fit,24rem)]">
+        <div className="grid w-full grid-cols-1 justify-center gap-6 sm:grid-cols-[repeat(auto-fit,24rem)]">
           {activeIncidents.map((incident) => (
             <IncidentCard key={incident.id} incident={incident} />
           ))}
@@ -99,18 +103,39 @@ function Home() {
               <p className="text-lg font-medium">{category.name}</p>
             </CardHeader>
             <CardContent className="px-0! flex flex-col gap-2 bg-[#E2E7EB] dark:bg-[#1D262F]">
-              {category.services.map((service, index) => (
-                <ServiceRow
-                  key={service.id}
-                  index={index}
-                  max={category.services.length}
-                  service={service}
-                />
-              ))}
+              {category.id === "tensamin" ? (
+                <TensaminServices category={category} />
+              ) : (
+                category.services.map((service, index) => (
+                  <ServiceRow
+                    key={service.id}
+                    index={index}
+                    max={category.services.length}
+                    service={service}
+                  />
+                ))
+              )}
             </CardContent>
           </div>
         ))}
       </div>
+
+      <section
+        aria-labelledby="maintenance-heading"
+        className="mx-auto flex max-w-2xl flex-col gap-2 rounded-xl border px-5 py-4 text-sm border-[#C5CED6] bg-[#EDF1F4] dark:border-[#242D38] dark:bg-[#242D38]"
+      >
+        <h2 id="maintenance-heading" className="font-medium text-lg">
+          Weekly maintenance
+        </h2>
+        <p>
+          Every Sunday, 18:00 to Monday 00:00, Europe/Berlin. This is 16:00 to
+          22:00 UTC in summer and 17:00 to 23:00 UTC in winter.
+        </p>
+        <p className="text-muted-foreground">
+          Services may be temporarily unavailable while we perform updates and
+          restart systems.
+        </p>
+      </section>
 
       {pastIncidents.length > 0 && (
         <section className="pt-10 w-full flex flex-col items-center">
@@ -142,6 +167,115 @@ function Home() {
         </section>
       )}
     </main>
+  );
+}
+
+function TensaminServices({ category }: { category: Category }) {
+  const regularServices = category.services.filter(
+    (service) =>
+      !/^tensamin-(dev|stable|canary)-/.test(service.id) &&
+      !["tensamin-app", "tensamin-dev", "tensamin-omega"].includes(service.id),
+  );
+  return (
+    <>
+      {regularServices.map((service, index) => (
+        <ServiceRow
+          key={service.id}
+          service={service}
+          index={index}
+          max={regularServices.length}
+        />
+      ))}
+      <Tabs defaultValue="stable" className="border bg-card p-1">
+        <TabsList aria-label="Tensamin channel" className="w-full">
+          {["dev", "stable", "canary"].map((channel) => (
+            <TabsTrigger key={channel} value={channel}>
+              {channel.charAt(0).toUpperCase() + channel.slice(1)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {["dev", "stable", "canary"].map((channel) => (
+          <TabsContent key={channel} value={channel}>
+            <ChannelServices category={category} channel={channel} />
+          </TabsContent>
+        ))}
+      </Tabs>
+    </>
+  );
+}
+
+function ChannelServices({
+  category,
+  channel,
+}: {
+  category: Category;
+  channel: string;
+}) {
+  const channelServices = category.services.filter((service) =>
+    service.id.startsWith(`tensamin-${channel}-`),
+  );
+  const omikrons = channelServices.filter((service) =>
+    service.id.startsWith(`tensamin-${channel}-omikron-`),
+  );
+  const visibleServices = ["app", "omega"].flatMap((kind) =>
+    channelServices.filter(
+      (service) => service.id === `tensamin-${channel}-${kind}`,
+    ),
+  );
+  const online = omikrons.filter(
+    (service) => service.status === "online",
+  ).length;
+
+  return (
+    <>
+      {visibleServices.map((service, index) => (
+        <ServiceRow
+          key={service.id}
+          service={service}
+          index={index}
+          max={visibleServices.length}
+        />
+      ))}
+      {channelServices.length === 0 && (
+        <p className="px-4 py-3 text-muted-foreground">
+          No checks configured for this channel.
+        </p>
+      )}
+      <details
+        key={channel}
+        className="border-t border-[#C5CED6] dark:border-[#242D38]"
+      >
+        <summary className="flex cursor-pointer items-center justify-between gap-4 px-4 py-3 [&::-webkit-details-marker]:hidden">
+          <span className="flex items-center gap-2">
+            <ChevronRight className="size-4" />
+            Omikrons
+          </span>
+          <span
+            className={cn(
+              "text-xs",
+              online === omikrons.length && omikrons.length > 0
+                ? "text-emerald-500"
+                : "text-muted-foreground",
+            )}
+          >
+            {online}/{omikrons.length} online
+          </span>
+        </summary>
+        {omikrons.map((service, index) => (
+          <ServiceRow
+            key={service.id}
+            service={service}
+            index={index}
+            max={omikrons.length}
+          />
+        ))}
+        {omikrons.length === 0 && (
+          <p className="px-4 pb-3 text-muted-foreground">
+            No Omikrons configured.
+          </p>
+        )}
+      </details>
+    </>
   );
 }
 

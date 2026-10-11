@@ -1,6 +1,6 @@
 import "./styles.css";
 
-import { BUILT_IN_THEMES, ThemeProvider } from "@methanium/ui";
+import { ThemeProvider } from "@methanium/ui";
 import { Provider as MTPProvider } from "@methanium/status-mtp";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
@@ -19,11 +19,7 @@ declare module "@tanstack/react-router" {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider
-      defaultTheme="dark"
-      themes={BUILT_IN_THEMES}
-      defaultParentThemeId="methanium"
-    >
+    <ThemeProvider defaultTheme="dark">
       <MTPProvider options={mtpOptions} authenticate={false}>
         <RouterProvider router={router} />
       </MTPProvider>
